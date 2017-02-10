@@ -8,23 +8,27 @@ def deathStatement():
     print("You died\nYour level was: " + str(lvlCounter) + "\nYour overall score was " + str(overallXPCounter) + ".")
 
 def buyOrNot(nameOfItem, attackBonus, defenseBonus, xpGainBonus, cost):
-    global playersGold
-    print("You have " + str(playersGold) + " Gold.")
-    wantToBuy = input("Would you like to buy the " + nameOfItem + "? It will grant you:\nAttack: " + attackBonus + "\nDefense: " + defenseBonus + "\nWill increase your XP gain by: " + xpGainBonus + "\n\nThis item costs " + str(cost) + " gold." + "\n\n(to answer, just say \"yes\". If you do not wish to buy this item, you may say anything else)\n(to exit, simply enter \"exit\"\n")
-    if wantToBuy == "yes":
-        if playersGold < cost:
-            print("You do not have enough gold to buy this item!")
-            return False
-        print("Congratulations! You are now equipped with the " + nameOfItem + "!")
-        playersGold -= cost
-        return True
-    elif wantToBuy == "exit":
-        return "exit"
+    if nameOfItem == True:
+        print("You have already bought this item.")
     else:
-        return False
+        global playersGold
+        print("You have " + str(playersGold) + " Gold.")
+        wantToBuy = input("Would you like to buy the " + nameOfItem + "? It will grant you:\nAttack: " + attackBonus + "\nDefense: " + defenseBonus + "\nWill increase your XP gain by: " + xpGainBonus + "\n\nThis item costs " + str(cost) + " gold." + "\n\n(to answer, just say \"yes\". If you do not wish to buy this item, you may say anything else)\n(to exit, simply enter \"exit\"\n")
+        if wantToBuy == "yes":
+            if playersGold < cost:
+                print("You do not have enough gold to buy this item!")
+                return False
+            print("Congratulations! You are now equipped with the " + nameOfItem + "!")
+            playersGold -= cost
+            return True
+        elif wantToBuy == "exit":
+            return "exit"
+        else:
+            return False
 
 def wandering():
     global playersFood, playersGold, xpCounter, overallXPCounter, death
+    xpCounter -= lvlCounter * 150
     dirToWander = random.randint(1, 4)
     directions = ["North", "South", "East", "West"]
     distToWander = random.randint(5, 30)
@@ -33,20 +37,20 @@ def wandering():
     biomes = ["Ice Spike Plains", "Arid Desert", "Lush Jungle", "Spooky Forest", "Dark Cave", "Meadows of Valinor",
               "Low Grasslands", "Lush Riverlands", "Chasms of Doom", "Cliffs of Malibar"]
     print("You have chosen to wander " + str(directions[dirToWander - 1]) + " for " + str(
-        distToWander) + " miles. You have arived at " + biomes[whereYouGo] + ".")
+        distToWander) + " miles. You have arived at the " + biomes[whereYouGo] + ".")
     if getFromWandering in range(1, 3):
         playersFood += 2
         print("You found 2 food! You now have " + str(playersFood) + " food!")
-    if getFromWandering in range(4, 9):
+    elif getFromWandering in range(4, 9):
         playersFood += 1
         print("You found 1 food! You now have " + str(playersFood) + " food!")
-    if getFromWandering in range(10, 15):
+    elif getFromWandering in range(10, 15):
         playersGold += 1
         print("You found 1 gold! You now have " + str(playersGold) + " gold!")
-    if getFromWandering in range(16, 18):
+    elif getFromWandering in range(16, 18):
         playersGold += 10
         print("You found 10 gold! You now have " + str(playersGold) + " gold!")
-    if getFromWandering in range(19, 20):
+    elif getFromWandering in range(19, 20):
         xpCounter += 100
         overallXPCounter += 100
         print("You found 100 XP! You now have " + str(xpCounter) + " XP!")
@@ -119,7 +123,7 @@ Good Luck!\n\n""")
                 if playersFood == 1:
                     death = True
                 else:
-                    print("You had enought food. You have journeyed to a new place.")
+                    print("You had enough food. You have journeyed to a new place.")
                     wanderCounter = 0
                     wandering()
             else:
@@ -181,11 +185,23 @@ Good Luck!\n\n""")
                 playerHP += defenseBonus
                 fightOrFlee = input("A wild " + monsterList[monsterNameNum] + " of level " + str(monsterLvl) + " has appeared. Will you fight, flee, shop, or wander?\n")
                 while True:
-                    if fightOrFlee not in ["fight", "flee", "shop", "wander"]:
+                    if fightOrFlee not in ["fight", "flee", "shop", "wander", "gold", "food", "XP"]:
                         fightOrFlee = input(
                             "You did not say \"fight\", \"flee\", \"shop\", or \"wander\". You must say \"fight\", \"flee\", \"shop\", or \"wander\".\n")
                     else:
                         break
+                if fightOrFlee == "gold":
+                    howMuch = input("How much?")
+                    playersGold += int(howMuch)
+                    death = False
+                if fightOrFlee == "food":
+                    howMuch = input("How much?")
+                    playersFood += int(howMuch)
+                    death = False
+                if fightOrFlee == "xp":
+                    howMuch = input("How much?")
+                    xpCounter += int(howMuch)
+                    death = False
                 if fightOrFlee == "fight":
                     print("You have chosen to fight.")
                     if playerAttack <= 0:
@@ -197,6 +213,8 @@ Good Luck!\n\n""")
                                 monsterLvl = -monsterLvl
                             print("You killed the monster!")
                             playersGold += monsterLvl
+                            if monsterLvl == 0:
+                                playersGold += 1
                             death = False
                             if monsterLvl > lvlCounter:
                                 print(
@@ -204,9 +222,10 @@ Good Luck!\n\n""")
                                 monsterXP *= 3
                             xpCounter += monsterXP
                             overallXPCounter += monsterXP
-                            print("You have gained " + str(monsterXP) + "XP\nYou now have " + str(
-                                xpCounter) + " XP!\nYou have gained " + str(monsterLvl) + " Gold!\nYou now have " + str(
-                                playersGold) + " Gold!")
+                            if monsterLvl == 0:
+                                print("You have gained " + str(monsterXP) + "XP\nYou now have " + str(xpCounter) + " XP!\nYou have gained 1 Gold!\nYou now have " + str(playersGold) + " Gold!")
+                            else:
+                                print("You have gained " + str(monsterXP) + "XP\nYou now have " + str(xpCounter) + " XP!\nYou have gained " + str(monsterLvl) + " Gold!\nYou now have " + str(playersGold) + " Gold!")
                             if xpCounter >= requiredXP:
                                 xpCounter = 0
                                 lvlCounter += 1
@@ -316,7 +335,8 @@ Good Luck!\n\n""")
                         print("You do not have enough food to wander. Maybe you'll find more food next time!")
                     else:
                         playersFood -= 1
-                        print("You have chosen to wander. This has cost 1 food. You now have " + str(playersFood) + " food")
+                        wanderCounter = 0
+                        print("You have chosen to wander. This has cost 1 food. You now have " + str(playersFood) + " food.")
                         wandering()
             if death == True:
                 deathStatement()
