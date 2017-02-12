@@ -1,0 +1,20 @@
+Hey Curtis, here's what I'm planning:
+
+Achievements: each achievement has a name, a boolean telling whether or not it is already gotten, a reward in gold (small), a reward in
+XP (size depending on how great the achievement is), and why you got that achievement (what it takes to get the achievement)
+
+The achievements will be stored in a dictionary, for example:
+achievements={'Consistent Shopper': [False, 2, 15, 'Buy 4 items'], 'Ambitions Hunter': [False, 5, 20, 'Kill 50 monsters']}
+etc.
+
+There will be a function that runs, say, at the end of every new cycle (when you wander or finish fighting a monster, or leave the shop,
+etc) called something like checkForAchievements() and will go through a list of global variables and if statements and check to see if
+any of the conditions for getting a NEW achievement have been met. If so, it will mark that achievement as gotten and reward you for
+getting it.
+
+Now, obviously, there will need to be new global variables, like a counter for how many monsters you have killed, etc so that this can work
+
+If the player wants to view what achievements they have gotten (or haven't!) there will be functions that go through the dictionary and
+display (print, in a neat way) all the achievements that have (or haven't) been gotten.
+
+Anyway, that's my idea.
